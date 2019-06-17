@@ -1,34 +1,45 @@
 package fr.spriggans.strava.app;
 
-import java.util.ResourceBundle;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 public class Constants {
 
-	/**
-	 * Name of the configuration file
-	 */
-	private static final String BUNDLE_NAME = "constants";
+	private static final Properties PROPERTIES;
 
-	/**
-	 * Resource bundle containing configuration properties
-	 */
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
+	public static final Integer APP_CLIENT_ID;
 
-	public static final Integer APP_CLIENT_ID = integer("app.client_id");
+	public static final String APP_CLIENT_SECRET;
 
-	public static final String APP_CLIENT_SECRET = string("app.client_secret");
+	public static final String APP_CODE;
 
-	public static final String APP_CODE = string("app.code");
+	public static final Integer USER_ID;
 
-	public static final Integer USER_ID = integer("user.id");
+	public static final String WORK_BIKE_ID;
 
-	public static final String WORK_BIKE_ID = string("user.work_bike");
+	static {
+		PROPERTIES = new Properties();
+		try (InputStream input = new FileInputStream("./constants.properties")) {
+			PROPERTIES.load(input);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
+		APP_CLIENT_ID = integer("app.client_id");
+		APP_CLIENT_SECRET = string("app.client_secret");
+		APP_CODE = string("app.code");
+		USER_ID = integer("user.id");
+		WORK_BIKE_ID = string("user.work_bike");
+	}
 
 	private static Integer integer(final String key) {
-		return Integer.valueOf(RESOURCE_BUNDLE.getString(key));
+		return Integer.valueOf(PROPERTIES.getProperty(key));
 	}
 
 	private static String string(final String key) {
-		return RESOURCE_BUNDLE.getString(key);
+		return PROPERTIES.getProperty(key);
 	}
 }
