@@ -6,5 +6,5 @@ import javastrava.api.v3.service.Strava;
 public interface Consequence {
 
 	public void perform(Strava strava, StravaActivity activity);
-	
+
 }
