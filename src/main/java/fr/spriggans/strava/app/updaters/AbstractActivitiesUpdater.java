@@ -11,23 +11,26 @@ public abstract class AbstractActivitiesUpdater {
 
 	private Consequence consequence = getConsequence();
 
-	public final void modifyActivities(Strava strava, List<StravaActivity> activities) {
+	public final void updateActivities(Strava strava, List<StravaActivity> activities) {
+		preUpdate();
 		for (StravaActivity activity : activities) {
-
-			// TODO last update
-
 			if (condition.test(strava, activity)) {
 				consequence.perform(strava, activity);
 			}
 		}
-		allDone();
+		postUpdate();
 	}
+
 
 	protected abstract Consequence getConsequence();
 
 	protected abstract Condition getCondition();
 
-	protected void allDone() {
+	protected void preUpdate() {
+		// Override this in child classes
+	}
+
+	protected void postUpdate() {
 		// Override this in child classes
 	}
 

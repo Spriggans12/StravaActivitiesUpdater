@@ -19,6 +19,10 @@ public class Constants {
 
 	public static final String WORK_BIKE_ID;
 
+	public static final String USERNAME;
+
+	public static final String PASSWORD;
+
 	static {
 		PROPERTIES = new Properties();
 		try (InputStream input = new FileInputStream("./constants.properties")) {
@@ -32,6 +36,8 @@ public class Constants {
 		APP_CODE = string("app.code");
 		USER_ID = integer("user.id");
 		WORK_BIKE_ID = string("user.work_bike");
+		USERNAME = string("user.name");
+		PASSWORD = string("user.password");
 	}
 
 	private Constants() {
