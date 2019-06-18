@@ -28,17 +28,12 @@ public class ChangeWorkBikeAU extends AbstractActivitiesUpdater {
 
 	@Override
 	protected Condition getCondition() {
-		return (strava, activity) ->
-
-		(StravaActivityType.RIDE.equals(activity.getType()) && activity.getStartDateLocal() != null
+		return (strava, activity) -> StravaActivityType.RIDE.equals(activity.getType())
+				&& activity.getStartDateLocal() != null
 				&& !DayOfWeek.SATURDAY.equals(activity.getStartDateLocal().getDayOfWeek())
 				&& !DayOfWeek.SUNDAY.equals(activity.getStartDateLocal().getDayOfWeek())
 				&& activity.getElapsedTime() != null && activity.getElapsedTime() < 3600 && activity.getName() != null
-				&& !activity.getName().contains("Vélotaf")
-
-		)
-
-				|| activity.getId() == 2449596621L; // FIXME For testing
+				&& !activity.getName().contains("Vélotaf");
 	}
 
 	@Override
@@ -120,7 +115,7 @@ public class ChangeWorkBikeAU extends AbstractActivitiesUpdater {
 	protected void postUpdate() {
 		App.OUT.log("-----------------");
 		App.OUT.log(updated + " activities have been updated !");
-		if(updated != updatedPrivacy) {
+		if (updated != updatedPrivacy) {
 			App.OUT.log("/!\\ Only " + updatedPrivacy + " activities were made private !!!");
 		}
 		App.OUT.log("-----------------");
