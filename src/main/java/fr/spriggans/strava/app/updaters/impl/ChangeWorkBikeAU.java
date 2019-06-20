@@ -32,8 +32,8 @@ public class ChangeWorkBikeAU extends AbstractActivitiesUpdater {
 				&& activity.getStartDateLocal() != null
 				&& !DayOfWeek.SATURDAY.equals(activity.getStartDateLocal().getDayOfWeek())
 				&& !DayOfWeek.SUNDAY.equals(activity.getStartDateLocal().getDayOfWeek())
-				&& activity.getElapsedTime() != null && activity.getElapsedTime() < 3600 && activity.getName() != null
-				&& !activity.getName().contains("Vélotaf");
+				&& activity.getElapsedTime() != null && activity.getElapsedTime() < Constants.MAX_TIME_FOR_UPDATE
+				&& activity.getName() != null && !activity.getName().contains(Constants.ACTIVITY_NAME_PREFIX);
 	}
 
 	@Override
@@ -51,11 +51,13 @@ public class ChangeWorkBikeAU extends AbstractActivitiesUpdater {
 	}
 
 	private boolean changeActivityPrivacy(StravaActivity activity) {
-		try {
-			HtmlRequestActivityUpdater.makeActivityPrivate(webClient, activity.getId());
-		} catch (FailingHttpStatusCodeException | IOException e) {
-			App.OUT.err(e);
-			return false;
+		if (Constants.MAKE_PRIVATE) {
+			try {
+				HtmlRequestActivityUpdater.makeActivityPrivate(webClient, activity.getId());
+			} catch (FailingHttpStatusCodeException | IOException e) {
+				App.OUT.err(e);
+				return false;
+			}
 		}
 		return true;
 	}
@@ -63,24 +65,25 @@ public class ChangeWorkBikeAU extends AbstractActivitiesUpdater {
 	private StravaActivityUpdate getUpdatedActivity(StravaActivity activity) {
 		StravaActivityUpdate res = new StravaActivityUpdate(activity);
 
-		String name = "Vélotaf";
-		String desc = "";
+		String name = Constants.ACTIVITY_NAME_PREFIX;
+		String desc = Constants.ACTIVITY_DESC_PREFIX;
 		if (activity.getStartDateLocal() != null) {
 			if (activity.getStartDateLocal().getHour() > 12) {
-				name += " - retour maison";
-				desc = "Trajet entre le boulot et la maison.\r\n\r\n";
+				// Evening
+				name += Constants.ACTIVITY_NAME_EVENING;
+				desc += Constants.ACTIVITY_DESC_EVENING;
 			} else {
-				name += " - aller bosser";
-				desc = "Trajet entre la maison et le boulot.\r\n\r\n";
+				// Morning
+				name += Constants.ACTIVITY_NAME_MORNING;
+				desc += Constants.ACTIVITY_DESC_MORNING;
 			}
 		}
 
 		// Change activity's name
-		res.setName(name);
+		res.setName(name + Constants.ACTIVITY_NAME_SUFFIX);
 
 		// Change activity's description
-		desc += "Mis à jour par informatique, pour utiliser automatiquement le vélotaf et pas le vélo de course ! \\m/";
-		res.setDescription(desc);
+		res.setDescription(desc + Constants.ACTIVITY_DESC_SUFFIX);
 
 		// Use the work bike
 		res.setGearId(Constants.WORK_BIKE_ID);
@@ -107,7 +110,7 @@ public class ChangeWorkBikeAU extends AbstractActivitiesUpdater {
 			App.OUT.err(e);
 		}
 		if (!loggedInApp) {
-			App.OUT.err("Erreur lors du login à Strava. Activities will remain public.");
+			App.OUT.err("Error while login to Strava's website. Activities will remain public.");
 		}
 	}
 

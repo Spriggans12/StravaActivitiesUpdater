@@ -82,7 +82,7 @@
 							<tasks>
 								<copy file="constants.properties" todir="target" />
 								<replaceregexp file="target/constants.properties"
-									match="(.*)=.*"
+									match="((app|user)\..*)=.*"
 									replace="\1="
 									byline="true"/>
 							</tasks>

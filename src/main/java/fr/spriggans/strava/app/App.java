@@ -17,6 +17,8 @@ public class App {
 	public static final IDisplay OUT = new ConsoleDisplay();
 
 	public static void main(String[] args) {
+		OUT.log("Starting program...");
+		
 		// Gets a Strava API object
 		Strava strava = createStrava();
 
@@ -25,6 +27,8 @@ public class App {
 
 		// Performs the updates
 		updateActivities(strava, activities);
+		
+		OUT.log("All done !");
 	}
 
 	private static Strava createStrava() {
