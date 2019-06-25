@@ -84,13 +84,25 @@ Here's a list of every parameter, what it does, and - sometimes - additionnal ex
 The parameters must be set in a `parameter=value` fashion. No need to use space characters.
 
 - **`app.client_id`**  
-comment me
+This is your personnal Strava application ID  
+Go to your [Strava API page](https://www.strava.com/settings/api)  
+Read your application ID there. You may need to create an application if you haven't yet.
 
 - **`app.client_secret`**  
-comment me
+This is your personnal Strava application secret  
+You can find it the same way as **`app.client_id`** 
 
 - **`app.code`**  
-comment me
+This is where it gets tricky.  
+This encrypted code means that you have allowed the Strava application depicted by **`app.client_id`** to make changes to your Strava account.  
+To get this code, you must manually perform a OAuth process with Strava, to aquire an **access_token**.  
+Here's a way to do so :
+  - Open a browser, and go to https://www.strava.com/oauth/authorize?approval_prompt=force&response_type=code&scope=read,read_all,profile:read_all,profile:write,activity:read,activity:read_all,activity:write&redirect_uri=http%3A%2F%2Flocalhost&client_id=<APP_ID>  
+  Where <APP_ID> is your **`app.client_id`** you have written earlier
+  - Click Agree : it should go to into a *Not Found* page. That's normal.
+  - Inspect the URL. You will find a `&code=<MY_CODE>&scope=...` in it.
+  - Use the <MY_CODE> value for the **`app.code`** parameter.
+
 
 - **`app.make_private`**  
 Can be either 0 or 1  
