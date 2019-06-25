@@ -94,7 +94,7 @@ You can find it the same way as **`app.client_id`**
 
 - **`app.code`**  
 This is where it gets tricky.  
-This encrypted code means that you have allowed the Strava application depicted by **`app.client_id`** to make changes to your Strava account.  
+This encrypted parameter is used to tell Strava you have allowed the application depicted by **`app.client_id`** to make changes to your Strava account.  
 To get this code, you must manually perform a OAuth process with Strava, to aquire an **access_token**.  
 Here's a way to do so :
   - Open a browser, and go to https://www.strava.com/oauth/authorize?approval_prompt=force&response_type=code&scope=read,read_all,profile:read_all,profile:write,activity:read,activity:read_all,activity:write&redirect_uri=http%3A%2F%2Flocalhost&client_id=<APP_ID>  
