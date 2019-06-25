@@ -45,6 +45,10 @@ public class Constants {
 
 	public static final String ACTIVITY_DESC_SUFFIX;
 
+	public static final Boolean IGNORE_SSL;
+
+	public static final String LOGS_LEVEL;
+
 	static {
 		PROPERTIES = new Properties();
 		try (InputStream input = new FileInputStream("./constants.properties")) {
@@ -57,14 +61,16 @@ public class Constants {
 		APP_CLIENT_ID = integer("app.client_id");
 		APP_CLIENT_SECRET = string("app.client_secret");
 		APP_CODE = string("app.code");
-		USER_ID = integer("user.id");
-		WORK_BIKE_ID = string("user.work_bike");
 		MAKE_PRIVATE = bool("app.make_private");
 		UPDATE_ALL_ACTIVITIES = bool("app.update_regardless_of_date");
 		MAX_TIME_FOR_UPDATE = integer("app.max_time_to_update");
+		IGNORE_SSL = bool("app.ignore_ssl");
+		LOGS_LEVEL = string("app.logs_level");
 
 		USERNAME = string("user.name");
 		PASSWORD = string("user.password");
+		USER_ID = integer("user.id");
+		WORK_BIKE_ID = string("user.work_bike");
 
 		ACTIVITY_NAME_PREFIX = string("activity.name.prefix");
 		ACTIVITY_NAME_MORNING = string("activity.name.morning");
@@ -77,7 +83,7 @@ public class Constants {
 	}
 
 	private Constants() {
-		// Empty
+		// Empty. Just because.
 	}
 
 	private static Integer integer(final String key) {
