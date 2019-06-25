@@ -33,7 +33,7 @@ public class ChangeWorkBikeAU extends AbstractActivitiesUpdater {
 				&& !DayOfWeek.SATURDAY.equals(activity.getStartDateLocal().getDayOfWeek())
 				&& !DayOfWeek.SUNDAY.equals(activity.getStartDateLocal().getDayOfWeek())
 				&& activity.getElapsedTime() != null && activity.getElapsedTime() < Constants.MAX_TIME_FOR_UPDATE
-				&& activity.getName() != null && !activity.getName().contains(Constants.ACTIVITY_NAME_PREFIX);
+				&& activity.getCommute() != null && !activity.getCommute();
 	}
 
 	@Override
