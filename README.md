@@ -33,6 +33,7 @@ The activities that will be updated will be :
 * Activities performed from monday to friday. So no week-end rides will ever get updated.
 * Activities that lasted less than **`app.max_time_to_update`**.
 * Activities that are not already flagged by Strava as commutes.
+* Only bike rides will be updated.
 
 The program will then, for each matching activity :
 * Through the use of the API, change the activity's name, description, used bike, and commute-flag.
