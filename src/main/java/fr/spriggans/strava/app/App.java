@@ -1,7 +1,9 @@
 package fr.spriggans.strava.app;
 
+import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,7 +27,8 @@ public class App {
 		OUT.log("Starting program...");
 
 		// Program init
-		init();
+		preExecution();
+		LocalDateTime now = LocalDateTime.now();
 
 		// Gets a Strava API object
 		Strava strava = createStrava();
@@ -36,10 +39,13 @@ public class App {
 		// Performs the updates
 		updateActivities(strava, activities);
 
+		// Post program stuff
+		postExecution(now);
+
 		OUT.log("All done !");
 	}
 
-	private static void init() {
+	private static void preExecution() {
 		if (Constants.IGNORE_SSL) {
 			try {
 				// Disables SSL if asked for
@@ -63,13 +69,14 @@ public class App {
 	}
 
 	private static List<StravaActivity> getActivitiesToUpdate(Strava strava) {
-		// TODO Potential improvement :
-		// Only update activities from the last execution of the program ?
-		// Would require to add a param to allow for all activities to
-		// be updated regardless of he activity's date.
+		LocalDateTime updateFrom = null;
+		if (!Constants.UPDATE_ALL_ACTIVITIES) {
+			// Update only from the last execution time
+			updateFrom = Constants.LAST_EXECUTION.getDate();
+		}
 
 		// This fetches the 50 first activities of page 1
-		return strava.listAuthenticatedAthleteActivities();
+		return strava.listAuthenticatedAthleteActivities(null, updateFrom);
 	}
 
 	private static void updateActivities(Strava strava, List<StravaActivity> activities) {
@@ -77,4 +84,12 @@ public class App {
 		updater.updateActivities(strava, activities);
 	}
 
+	private static void postExecution(LocalDateTime now) {
+		try {
+			// Updates the date in the file
+			Constants.LAST_EXECUTION.replaceDateWith(now);
+		} catch (IOException e) {
+			OUT.err(e);
+		}
+	}
 }

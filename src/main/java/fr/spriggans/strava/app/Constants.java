@@ -48,6 +48,8 @@ public class Constants {
 	public static final Boolean IGNORE_SSL;
 
 	public static final String LOGS_LEVEL;
+	
+	public static final LastExecution LAST_EXECUTION;
 
 	static {
 		PROPERTIES = new Properties();
@@ -66,6 +68,7 @@ public class Constants {
 		MAX_TIME_FOR_UPDATE = integer("app.max_time_to_update");
 		IGNORE_SSL = bool("app.ignore_ssl");
 		LOGS_LEVEL = string("app.logs_level");
+		LAST_EXECUTION = new LastExecution(string("app.date_file_path"));
 
 		USERNAME = string("user.name");
 		PASSWORD = string("user.password");
