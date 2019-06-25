@@ -5,7 +5,9 @@ The program will change :
 
 * the name / description of the activity
 * the bike you used
-* it will make the activity private (if wanted, so you won't spam your friends with work rides)
+* it will make the activity private (so you won't spam your friends with work rides)  
+(This behaviour can be turned off)
+* It will flag the activity as Commute
 
 Use this program to update your commute rides automatically !
 
@@ -13,30 +15,27 @@ Use this program to update your commute rides automatically !
 
 I like Strava for keeping track of my mileage. I use it a lot, and I like having wear information on my bikes that way.
 
-I have two bikes : a road bike I use for competition / training, and a work bike I use twice a day.
+I have two bikes : a *road bike* I use for competition / training, and a **work bike** I use twice a day.
 
-I used to only record my road bike rides, because if I was to record work rides, the mileage would count on my default bike, the road one.  
-If I did record my work rides, I would have to load Strava every day to change the bike used during my commutes manually... Every day...
+I used to only record my *road bike* rides, because if I was to record **work rides**, the mileage would count on my default bike, the *road one*.  
+If I did record my **work rides**, I would have to load Strava every day to change the bike used during my commutes manually... Every day...
 
 So this is why this program is here !  
-It makes my commutes use the work bike, and it makes these rides privates, so my friends are not spammed with me riding half an hour twice a day.
+It makes my commutes use the **work bike**, and it makes these rides privates, so my friends are not spammed with me riding half an hour twice a day.
+
+In my Strava profile, I've set my *road bike* set as default. These road activities won't be updated by this program, because either they are longer than my work commutes, or they are done on week-ends.
 
 ## How it works
 
 The program uses both Strava v3 API and Strava's website to update your activities.
 
 The activities that will be updated will be :
-
 * Activities performed from monday to friday. So no week-end rides will ever get updated.
-
 * Activities that are smaller than **`app.max_time_to_update`**.
-
 * Activities that are not already flagged by Strava as commutes.
 
 The program will then, for each matching activity :
-
 * Through the use of the API, change the activity's name, description, used bike, and commute-flag.
-
 * Though the website, turn your activity private.
 
 
