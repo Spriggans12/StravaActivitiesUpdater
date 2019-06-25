@@ -41,7 +41,7 @@ Then, you need to edit the constants.properties file (TODO explanation).
 
 After that, you simply execute the program with :
 ```
-java -jar strava-update-gears-x.y.z.jar
+java -jar strava-update-gears.jar
 ```
 
 
