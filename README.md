@@ -31,7 +31,7 @@ The program uses both Strava v3 API and Strava's website to update your activiti
 
 The activities that will be updated will be :
 * Activities performed from monday to friday. So no week-end rides will ever get updated.
-* Activities that are smaller than **`app.max_time_to_update`**.
+* Activities that lasted less than **`app.max_time_to_update`**.
 * Activities that are not already flagged by Strava as commutes.
 
 The program will then, for each matching activity :
@@ -49,11 +49,9 @@ The website connection uses the parameters **`user.name`** and **`user.password`
 There are limitations to this program :
 
 * It will not update activities already flagged as commutes.
-
-* It uses a program to surf on Strava's website, to make activities private.  
+* It uses a framework to surf on Strava's website, to make activities private; because there is no way to change the privacy cleanly with the v3 API...  
 If the website is updated at some point, this privacy-making could cease to work.  
 The program is done in such a way that failing to turn an activity private won't crash everything.
-
 * The program will only scan up to your last 50 activities, so be sure to run it every once in a while.
 
 
@@ -79,7 +77,7 @@ After that, you simply execute the program with :
 java -jar strava-update-gears.jar
 ```
 
-## Program parameters
+### Program parameters
 
 You need to set every parameter present in the `constants.properties` file.  
 Here's a list of every parameter, what it does, and - sometimes - additionnal explanation.  
@@ -107,7 +105,7 @@ Set that to 1 to update all your activities.
 
 - **`app.date_file_path`**  
 This is the location of the file containing the last execution date.  
-This location should exist on your drive. If the file does not exist, it will be created.  
+This location should be accessible on your drive. If the file does not exist, it will be created.  
 Examples : /home/pi/strava/lastExecution.txt  OR  C:/Users/you/strava/lastExecution.txt
 
 - **`app.max_time_to_update`**  
@@ -117,7 +115,7 @@ This makes it so your offday long rides won't be seen as work commutes, as they 
 
 - **`app.ignore_ssl`**  
 Can be either 0 or 1  
-If set to 1, ignores certificates check completely, and thus SSL.  
+If set to 1, ignores certificates checks completely, and thus SSL.  
 This should **realy** be set to 0  
 Only use the 1 value in a testing environment.
 
@@ -134,8 +132,8 @@ Strava ID of the bike you want to use for work commutes.
 How to get this id is easy :
   - Go [there](https://www.strava.com/settings/gear)
   - Click on your work bike
-  - Note your ID in the URL
-  - Append **b** to this ID, and use that as a value (eg URL /bikes/123456 will mean you should use `user.work_bike=b123456` in the file)
+  - Find your gear ID in the URL
+  - Append **b** to this gear ID, and use that as a value (eg URL /bikes/123456 will mean you should use `user.work_bike=b123456` in the file)
 
 - **`user.name`**  
 Your email for connecting to Strava.  
@@ -148,10 +146,12 @@ This parameter is not needed if you choose to set **`app.make_private`** to 0
 - **`activity.name.XXX`**  
 These parameters allow you to change what your updated activities names will be.  
 Different values can be configured if the activity was a morning or an evening ride.  
+These values can remain empty.
 
 - **`activity.desc.XXX`**  
 These parameters allow you to change what your updated activities descriptions will be.
-Different values can be configured if the activity was a morning or an evening ride.
+Different values can be configured if the activity was a morning or an evening ride.  
+These values can remain empty.
 
 
 ## Compiling the program yourself
@@ -171,5 +171,4 @@ This project is licensed under the Do What The F*ck You Want To Public License -
 ## Acknowledgments
 
 * Strava, I guess
-* Also, [this guy](https://github.com/danshannon/javastravav3api) for making the Java API. Many thanks to him ! @github/danshannon
-
+* Also, [this guy](https://github.com/danshannon/javastravav3api) for making the Java API. Many thanks to him !
