@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -48,13 +49,16 @@ public class LastExecution {
 	/**
 	 * Writes to the file, setting its content to <code>date</code>.<br/>
 	 * Also changes this object's value of the <code>date</code> field.
-	 * 
-	 * @throws IOException
 	 */
-	public void replaceDateWith(LocalDateTime newDate) throws IOException {
+	public void replaceDateWith(LocalDateTime newDate) {
+		if (newDate == null) {
+			return;
+		}
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(dateFile))) {
 			writer.write(formatter.format(newDate));
 			date = newDate;
+		} catch (IOException | DateTimeException e) {
+			App.OUT.err(e);
 		}
 	}
 

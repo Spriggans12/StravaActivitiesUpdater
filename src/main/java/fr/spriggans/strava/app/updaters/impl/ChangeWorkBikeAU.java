@@ -2,6 +2,7 @@ package fr.spriggans.strava.app.updaters.impl;
 
 import java.io.IOException;
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -26,6 +27,8 @@ public class ChangeWorkBikeAU extends AbstractActivitiesUpdater {
 
 	private boolean loggedInApp;
 
+	private LocalDateTime lastEndingTime = null;
+
 	@Override
 	protected Condition getCondition() {
 		return (strava, activity) -> StravaActivityType.RIDE.equals(activity.getType())
@@ -47,7 +50,17 @@ public class ChangeWorkBikeAU extends AbstractActivitiesUpdater {
 			// Updates the activity using the official API
 			strava.updateActivity(activity.getId(), getUpdatedActivity(activity));
 			updated++;
+			
+			// Keep track of the most recent activity ending time
+			LocalDateTime endingTimeOfActivity = getEndingTime(activity);
+			if(lastEndingTime == null || endingTimeOfActivity.isAfter(lastEndingTime)) {
+				lastEndingTime = activity.getStartDateLocal();
+			}
 		};
+	}
+	
+	private LocalDateTime getEndingTime(StravaActivity activity) {
+		return activity.getStartDateLocal().plusSeconds(activity.getElapsedTime());
 	}
 
 	private boolean changeActivityPrivacy(StravaActivity activity) {
@@ -115,7 +128,7 @@ public class ChangeWorkBikeAU extends AbstractActivitiesUpdater {
 	}
 
 	@Override
-	protected void postUpdate() {
+	protected LocalDateTime postUpdate() {
 		App.OUT.log("-----------------");
 		App.OUT.log(updated + " activities have been updated !");
 		if (updated != updatedPrivacy) {
@@ -126,6 +139,7 @@ public class ChangeWorkBikeAU extends AbstractActivitiesUpdater {
 		if (webClient != null) {
 			webClient.close();
 		}
+		return lastEndingTime;
 	}
 
 }

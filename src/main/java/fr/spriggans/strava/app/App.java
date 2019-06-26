@@ -1,6 +1,5 @@
 package fr.spriggans.strava.app;
 
-import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -28,7 +27,6 @@ public class App {
 
 		// Program init
 		preExecution();
-		LocalDateTime now = LocalDateTime.now();
 
 		// Gets a Strava API object
 		Strava strava = createStrava();
@@ -37,10 +35,10 @@ public class App {
 		List<StravaActivity> activities = getActivitiesToUpdate(strava);
 
 		// Performs the updates
-		updateActivities(strava, activities);
+		LocalDateTime endOfLastActivity = updateActivities(strava, activities);
 
 		// Post program stuff
-		postExecution(now);
+		postExecution(endOfLastActivity);
 
 		OUT.log("All done !");
 	}
@@ -79,17 +77,17 @@ public class App {
 		return strava.listAuthenticatedAthleteActivities(null, updateFrom);
 	}
 
-	private static void updateActivities(Strava strava, List<StravaActivity> activities) {
+	/**
+	 * @return Ending time of the last (most recent) updated activity. Null if no
+	 *         activities were updated.
+	 */
+	private static LocalDateTime updateActivities(Strava strava, List<StravaActivity> activities) {
 		AbstractActivitiesUpdater updater = new ChangeWorkBikeAU();
-		updater.updateActivities(strava, activities);
+		return updater.updateActivities(strava, activities);
 	}
 
-	private static void postExecution(LocalDateTime now) {
-		try {
-			// Updates the date in the file
-			Constants.LAST_EXECUTION.replaceDateWith(now);
-		} catch (IOException e) {
-			OUT.err(e);
-		}
+	private static void postExecution(LocalDateTime endOfLastActivity) {
+		// Updates the date in the file (won't be updated if null)
+		Constants.LAST_EXECUTION.replaceDateWith(endOfLastActivity);
 	}
 }
