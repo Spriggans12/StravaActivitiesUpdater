@@ -859,9 +859,6 @@ public class ActivityServiceImpl extends StravaServiceImpl implements ActivitySe
 				.asList(this.api.listAuthenticatedAthleteActivities(secondsBefore, secondsAfter, thisPage.getPage(),
 						thisPage.getPageSize())));
 
-		// Handle Strava's slight weirdnesses with privacy
-		activities = PrivacyUtils.handlePrivateActivities(activities, this.getToken());
-
 		// Put the activities in the cache
 		this.activityCache.putAll(activities);
 

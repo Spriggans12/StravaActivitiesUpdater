@@ -36,6 +36,11 @@ public class HtmlRequestActivityUpdater {
 		webClient.getOptions().setDownloadImages(false);
 		webClient.getOptions().setJavaScriptEnabled(false);
 		webClient.getCookieManager().setCookiesEnabled(true);
+		
+		if(Constants.IGNORE_SSL) {
+			webClient.getOptions().setUseInsecureSSL(true);
+		}
+		
 		return webClient;
 	}
 

@@ -1,8 +1,13 @@
 package javastrava.api.v3.rest;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.MissingResourceException;
 import java.util.concurrent.CompletableFuture;
 
+import fr.spriggans.strava.app.App;
+import fr.spriggans.strava.app.Constants;
+import fr.spriggans.strava.app.security.TrustManagerAllCertificates;
 import javastrava.api.v3.auth.impl.retrofit.AuthorisationServiceImpl;
 import javastrava.api.v3.auth.model.Token;
 import javastrava.api.v3.auth.model.TokenResponse;
@@ -50,6 +55,7 @@ import javastrava.config.StravaConfig;
 import javastrava.json.impl.gson.JsonUtilImpl;
 import retrofit.RestAdapter;
 import retrofit.RestAdapter.LogLevel;
+import retrofit.client.Client;
 import retrofit.converter.GsonConverter;
 import retrofit.mime.TypedFile;
 
@@ -76,7 +82,7 @@ public class API {
 	 */
 	public static AuthorisationAPI authorisationInstance() {
 		if (authorisationAPI == null) {
-			authorisationAPI = new RestAdapter.Builder().setClient(new RetrofitClientResponseInterceptor())
+			authorisationAPI = new RestAdapter.Builder().setClient(getClient())
 					.setConverter(new GsonConverter(new JsonUtilImpl().getGson())).setLogLevel(API.logLevel(AuthorisationServiceImpl.class))
 					.setEndpoint(StravaConfig.AUTH_ENDPOINT).setErrorHandler(new RetrofitErrorHandler()).build().create(AuthorisationAPI.class);
 		}
@@ -109,7 +115,7 @@ public class API {
 	public static <T> T instance(final Class<T> class1, final Token token) {
 		return new RestAdapter.Builder()
 		// Client overrides handling of Strava-specific headers in the response, to deal with rate limiting
-		.setClient(new RetrofitClientResponseInterceptor())
+		.setClient(getClient())
 		// Converter is a GSON implementation with custom converters
 		.setConverter(new GsonConverter(new JsonUtilImpl().getGson()))
 		// Log level is determined per API service
@@ -120,6 +126,17 @@ public class API {
 		.setRequestInterceptor(request -> request.addHeader(StravaConfig.string("strava.authorization_header_name"), token.getTokenType() + " " + token.getToken())) //$NON-NLS-1$ //$NON-NLS-2$
 		// Error handler deals with Strava's implementations of 400, 401, 403, 404 errors etc.
 		.setErrorHandler(new RetrofitErrorHandler()).build().create(class1);
+	}
+
+	private static Client getClient() {
+		if (Constants.IGNORE_SSL) {
+			try {
+				return TrustManagerAllCertificates.getUnsafeRetrofitClientResponseInterceptor();
+			} catch (KeyManagementException | NoSuchAlgorithmException e) {
+				App.OUT.err(e);
+			}
+		}
+		return new RetrofitClientResponseInterceptor();
 	}
 
 	/**

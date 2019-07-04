@@ -5,10 +5,15 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+
+import com.squareup.okhttp.OkHttpClient;
+
+import javastrava.api.v3.rest.util.RetrofitClientResponseInterceptor;
 
 /**
  * Completely disables all certificates checks. Thus rendering HTTPS
@@ -19,12 +24,23 @@ import javax.net.ssl.X509TrustManager;
  */
 public class TrustManagerAllCertificates implements X509TrustManager {
 
-	public static void disableSSL() throws NoSuchAlgorithmException, KeyManagementException {
-		SSLContext sc = SSLContext.getInstance("SSL");
-		sc.init(null, new TrustManager[] { new TrustManagerAllCertificates() }, new java.security.SecureRandom());
-		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-		HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
+	public static RetrofitClientResponseInterceptor getUnsafeRetrofitClientResponseInterceptor()
+			throws KeyManagementException, NoSuchAlgorithmException {
+		OkHttpClient okHttpClient = new OkHttpClient();
+		okHttpClient.setSslSocketFactory(getUnsafeSSLFactory());
+		okHttpClient.setHostnameVerifier(getUnsafeHostnameVerifier());
+		return new RetrofitClientResponseInterceptor(okHttpClient);
+	}
 
+	private static SSLSocketFactory getUnsafeSSLFactory() throws NoSuchAlgorithmException, KeyManagementException {
+		SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+		sslContext.init(null, new TrustManager[] { new TrustManagerAllCertificates() },
+				new java.security.SecureRandom());
+		return sslContext.getSocketFactory();
+	}
+
+	private static HostnameVerifier getUnsafeHostnameVerifier() {
+		return (hostname, session) -> true;
 	}
 
 	@Override

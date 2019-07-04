@@ -1,7 +1,5 @@
 package fr.spriggans.strava.app;
 
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
@@ -9,7 +7,6 @@ import java.util.logging.Logger;
 
 import fr.spriggans.strava.app.display.IDisplay;
 import fr.spriggans.strava.app.display.impl.ConsoleDisplay;
-import fr.spriggans.strava.app.security.TrustManagerAllCertificates;
 import fr.spriggans.strava.app.updaters.AbstractActivitiesUpdater;
 import fr.spriggans.strava.app.updaters.impl.ChangeWorkBikeAU;
 import javastrava.api.v3.auth.AuthorisationService;
@@ -44,15 +41,6 @@ public class App {
 	}
 
 	private static void preExecution() {
-		if (Constants.IGNORE_SSL) {
-			try {
-				// Disables SSL if asked for
-				TrustManagerAllCertificates.disableSSL();
-			} catch (KeyManagementException | NoSuchAlgorithmException e) {
-				throw new RuntimeException(e);
-			}
-		}
-
 		// Sets Log level
 		Level level = Level.parse(Constants.LOGS_LEVEL);
 		if (level != null) {
